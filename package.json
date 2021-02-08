@@ -8,13 +8,14 @@
     "start": "next start"
   },
   "dependencies": {
+    "autoprefixer": "^10.0.4",
     "axios": "^0.21.1",
     "dayjs": "^1.10.4",
     "next": "10.0.6",
+    "postcss": "^8.1.10",
     "react": "17.0.1",
     "react-dom": "17.0.1",
-    "autoprefixer": "^10.0.4",
-    "postcss": "^8.1.10",
+    "react-feather": "^2.0.9",
     "tailwindcss": "^2.0.2"
   }
 }

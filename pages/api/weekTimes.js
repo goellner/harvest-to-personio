@@ -26,8 +26,6 @@ const groupBy = (collection, property) => {
 
 export default async (req, res) => {
   try {
-    console.log(req.query.from)
-    console.log(req.query.to)
     const resp = await axios({
       method: 'GET',
       url: 'https://api.harvestapp.com/api/v2/time_entries',
@@ -82,7 +80,6 @@ export default async (req, res) => {
         day: startTimeDayJs.format('dddd'),
       })
     })
-    // console.log(groupedByDay)
     res.status(200).json(ret)
   } catch (err) {
     // Handle Error Here

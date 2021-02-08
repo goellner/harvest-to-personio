@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
+import { Copy, Loader } from 'react-feather'
+
 import dayjs from 'dayjs'
 import localeData from 'dayjs/plugin/localeData'
 import advancedFormat from 'dayjs/plugin/advancedFormat'
@@ -14,8 +16,10 @@ dayjs.extend(weekOfYear)
 dayjs.extend(isoWeek)
 
 export default function Home() {
-  const [weekData, setWeekData] = useState([])
-  const [weekRecords, setWeekRecords] = useState([])
+  const [title, setTitle] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [weekData, setWeekData] = useState(undefined)
+  const [weekRecords, setWeekRecords] = useState(undefined)
   const [currentWeekNumber, setCurrentWeekNumber] = useState(1)
 
   const weeksInAYear = 52
@@ -38,6 +42,7 @@ export default function Home() {
   }
 
   const getWeekRecords = async (weekObject) => {
+    setLoading(true)
     try {
       const resp = await axios({
         method: 'GET',
@@ -47,12 +52,28 @@ export default function Home() {
           to: weekObject.endOfWeek.format('YYYY-MM-DD'),
         },
       })
-      console.log(resp.data)
+      // console.log(resp.data)
+      setLoading(false)
       setWeekRecords(resp.data)
     } catch (err) {
       // Handle Error Here
       console.error(err)
     }
+  }
+
+  const handlePrev = () => {
+    if (currentWeekNumber - 1 > 0) {
+      setCurrentWeekNumber(currentWeekNumber - 1)
+    }
+  }
+  const handleNext = () => {
+    if (currentWeekNumber + 1 < weekData.length) {
+      setCurrentWeekNumber(currentWeekNumber + 1)
+    }
+  }
+
+  const copyToClipboard = (value) => {
+    navigator.clipboard.writeText(value)
   }
 
   useEffect(() => {
@@ -61,9 +82,14 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
-    const arrayIndex = weekData.findIndex((weekData) => weekData.weekNumber === currentWeekNumber)
-    if (weekData[arrayIndex] !== null && weekData[arrayIndex] !== undefined) {
-      setWeekRecords(getWeekRecords(weekData[arrayIndex]))
+    if (weekData !== undefined && weekData.length > 0) {
+      const arrayIndex = weekData.findIndex((weekData) => weekData.weekNumber === currentWeekNumber)
+      setTitle(
+        `${weekData[currentWeekNumber].startOfWeekFormatted} - ${weekData[currentWeekNumber].endOfWeekFormatted}`
+      )
+      if (weekData[arrayIndex] !== null && weekData[arrayIndex] !== undefined) {
+        setWeekRecords(getWeekRecords(weekData[arrayIndex]))
+      }
     }
   }, [currentWeekNumber, weekData])
 
@@ -81,25 +107,12 @@ export default function Home() {
                 <div className="flex-shrink-0 flex items-center">
                   <h1 className="text-xl font-bold">Harvest to Personio</h1>
                 </div>
-                <div className="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
-                  <a
-                    href="/"
-                    className="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-                  >
-                    Dashboard
-                  </a>
-                </div>
               </div>
             </div>
           </div>
         </nav>
 
-        <div className="py-10">
-          <header>
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-              <h1 className="text-3xl font-bold leading-tight text-gray-900">Dashboard</h1>
-            </div>
-          </header>
+        <div className="py-2">
           <main>
             <div className="container mx-auto sm:px-6 lg:px-8">
               <div className="px-4 py-8 sm:px-0">
@@ -107,64 +120,106 @@ export default function Home() {
                   <div className="col-span-3 flex items-center">
                     <button
                       className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                      onClick={() => setCurrentWeekNumber(currentWeekNumber - 1)}
+                      onClick={handlePrev}
                     >
                       Prev
                     </button>
                   </div>
                   <div className="col-span-6 text-center">
-                    <div className="text-lg font-bold leading-6 font-medium text-gray-900">
+                    <div className="text-lg font-bold leading-6 font-medium text-indigo-600">
                       Week {currentWeekNumber}
                     </div>
-                    <div className="text-lg leading-6 font-medium text-gray-500">
-                      {weekData[currentWeekNumber].startOfWeekFormatted} -{' '}
-                      {weekData[currentWeekNumber].endOfWeekFormatted}
-                    </div>
+                    <div className="text-lg leading-6 font-medium text-gray-500">{title}</div>
                   </div>
 
                   <div className="col-span-3 flex items-center justify-end">
                     <button
                       className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                      onClick={() => setCurrentWeekNumber(currentWeekNumber + 1)}
+                      onClick={handleNext}
                     >
                       Next
                     </button>
                   </div>
                 </div>
                 <div className="md:grid grid-cols-5 gap-2 mt-16">
-                  {weekRecords !== undefined &&
+                  {loading && (
+                    <div className="flex items-center justify-center col-span-5">
+                      <Loader color="#5146e4" className="animate-spin" size="32" />
+                    </div>
+                  )}
+                  {!loading && weekRecords !== undefined && weekRecords.length < 1 && (
+                    <div className="flex items-center justify-center col-span-5">Welcome to the future</div>
+                  )}
+                  {!loading &&
+                    weekRecords !== undefined &&
                     weekRecords.length > 0 &&
                     weekRecords.reverse().map((day, index) => {
                       if (index > 4) return null
                       return (
                         <div className="bg-white rounded-xl shadow-lg overflow-hidden" key={day.date}>
-                          <div className="px-4 py-2 bg-indigo-500">
+                          <div className="px-4 py-2 bg-indigo-600">
                             <h3 className="text-lg leading-6 font-medium text-white">{day.day}</h3>
                             <p className="mt-1 max-w-2xl text-base text-indigo-50">
                               {dayjs(day.date, 'YYYY-MM-DD').format('DD.MM.YYYY')}
                             </p>
                           </div>
                           <div className="border-t border-gray-200 px-4 py-2 sm:p-0">
-                            <dl className="sm:divide-y sm:divide-gray-200">
-                              <div className="px-4 py-4">
-                                <dt className="text-base font-medium text-gray-500">Start Time</dt>
-                                <dd className="mt-1 text-base text-gray-900 sm:mt-0 sm:col-span-2">{day.startTime}</dd>
+                            <div className="sm:divide-y sm:divide-gray-200">
+                              <div className="px-4 py-4 flex justify-between items-center">
+                                <div>
+                                  <span className="text-base font-medium text-gray-500">Start Time</span>
+                                  <div className="mt-1 text-base text-gray-900 sm:mt-0 sm:col-span-2">
+                                    {day.startTime}
+                                  </div>
+                                </div>
+                                <button
+                                  className="active:outline-none focus:outline-none hover:bg-gray-100 p-2 rounded-md"
+                                  onClick={() => copyToClipboard(day.startTime)}
+                                >
+                                  <Copy color="#2d323b" />
+                                </button>
                               </div>
-                              <div className="px-4 py-4">
-                                <dt className="text-base font-medium text-gray-500">End Time</dt>
-                                <dd className="mt-1 text-base text-gray-900 sm:mt-0 sm:col-span-2">{day.endTime}</dd>
+                              <div className="px-4 py-4 flex justify-between items-center">
+                                <div>
+                                  <span className="text-base font-medium text-gray-500">End Time</span>
+                                  <div className="mt-1 text-base text-gray-900 sm:mt-0 sm:col-span-2">
+                                    {day.endTime}
+                                  </div>
+                                </div>
+                                <button
+                                  className="active:outline-none focus:outline-none hover:bg-gray-100 p-2 rounded-md"
+                                  onClick={() => copyToClipboard(day.endTime)}
+                                >
+                                  <Copy color="#2d323b" />
+                                </button>
                               </div>
-                              <div className="px-4 py-4">
-                                <dt className="text-base font-medium text-gray-500">Break Start</dt>
-                                <dd className="mt-1 text-base text-gray-900 sm:mt-0 sm:col-span-2">12:00</dd>
+                              <div className="px-4 py-4 flex justify-between items-center">
+                                <div>
+                                  <span className="text-base font-medium text-gray-500">Break Start</span>
+                                  <div className="mt-1 text-base text-gray-900 sm:mt-0 sm:col-span-2">12:00</div>
+                                </div>
+                                <button
+                                  className="active:outline-none focus:outline-none hover:bg-gray-100 p-2 rounded-md"
+                                  onClick={() => copyToClipboard('12:00')}
+                                >
+                                  <Copy color="#2d323b" />
+                                </button>
                               </div>
-                              <div className="px-4 py-4">
-                                <dt className="text-base font-medium text-gray-500">Break End</dt>
-                                <dd className="mt-1 text-base text-gray-900 sm:mt-0 sm:col-span-2">
-                                  {day.lunchBreakEnd}
-                                </dd>
+                              <div className="px-4 py-4 flex justify-between items-center">
+                                <div>
+                                  <span className="text-base font-medium text-gray-500">Break End</span>
+                                  <div className="mt-1 text-base text-gray-900 sm:mt-0 sm:col-span-2">
+                                    {day.lunchBreakEnd}
+                                  </div>
+                                </div>
+                                <button
+                                  className="active:outline-none focus:outline-none hover:bg-gray-100 p-2 rounded-md"
+                                  onClick={() => copyToClipboard(day.lunchBreakEnd)}
+                                >
+                                  <Copy color="#2d323b" />
+                                </button>
                               </div>
-                            </dl>
+                            </div>
                           </div>
                         </div>
                       )
