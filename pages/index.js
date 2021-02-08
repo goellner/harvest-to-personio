@@ -103,8 +103,8 @@ export default function Home() {
           <main>
             <div className="container mx-auto sm:px-6 lg:px-8">
               <div className="px-4 py-8 sm:px-0">
-                <div className="grid grid-cols-7 gap-4">
-                  <div className="col-span-3">
+                <div className="md:grid grid-cols-12 gap-4">
+                  <div className="col-span-3 flex items-center">
                     <button
                       className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                       onClick={() => setCurrentWeekNumber(currentWeekNumber - 1)}
@@ -112,7 +112,17 @@ export default function Home() {
                       Prev
                     </button>
                   </div>
-                  <div className="col-span-3">
+                  <div className="col-span-6 text-center">
+                    <div className="text-lg font-bold leading-6 font-medium text-gray-900">
+                      Week {currentWeekNumber}
+                    </div>
+                    <div className="text-lg leading-6 font-medium text-gray-500">
+                      {weekData[currentWeekNumber].startOfWeekFormatted} -{' '}
+                      {weekData[currentWeekNumber].endOfWeekFormatted}
+                    </div>
+                  </div>
+
+                  <div className="col-span-3 flex items-center justify-end">
                     <button
                       className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                       onClick={() => setCurrentWeekNumber(currentWeekNumber + 1)}
@@ -121,35 +131,36 @@ export default function Home() {
                     </button>
                   </div>
                 </div>
-                <div className="grid grid-cols-7 gap-2">
+                <div className="md:grid grid-cols-5 gap-2 mt-16">
                   {weekRecords !== undefined &&
                     weekRecords.length > 0 &&
-                    weekRecords.reverse().map((day) => {
+                    weekRecords.reverse().map((day, index) => {
+                      if (index > 4) return null
                       return (
-                        <div className="bg-white rounded-xl shadow-lg" key={day.date}>
-                          <div className="px-4 py-2">
-                            <h3 className="text-lg leading-6 font-medium text-gray-900">{day.day}</h3>
-                            <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                        <div className="bg-white rounded-xl shadow-lg overflow-hidden" key={day.date}>
+                          <div className="px-4 py-2 bg-indigo-500">
+                            <h3 className="text-lg leading-6 font-medium text-white">{day.day}</h3>
+                            <p className="mt-1 max-w-2xl text-base text-indigo-50">
                               {dayjs(day.date, 'YYYY-MM-DD').format('DD.MM.YYYY')}
                             </p>
                           </div>
                           <div className="border-t border-gray-200 px-4 py-2 sm:p-0">
                             <dl className="sm:divide-y sm:divide-gray-200">
                               <div className="px-4 py-4">
-                                <dt className="text-sm font-medium text-gray-500">Start Time</dt>
-                                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{day.startTime}</dd>
+                                <dt className="text-base font-medium text-gray-500">Start Time</dt>
+                                <dd className="mt-1 text-base text-gray-900 sm:mt-0 sm:col-span-2">{day.startTime}</dd>
                               </div>
                               <div className="px-4 py-4">
-                                <dt className="text-sm font-medium text-gray-500">End Time</dt>
-                                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{day.endTime}</dd>
+                                <dt className="text-base font-medium text-gray-500">End Time</dt>
+                                <dd className="mt-1 text-base text-gray-900 sm:mt-0 sm:col-span-2">{day.endTime}</dd>
                               </div>
                               <div className="px-4 py-4">
-                                <dt className="text-sm font-medium text-gray-500">Break Start</dt>
-                                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">12:00</dd>
+                                <dt className="text-base font-medium text-gray-500">Break Start</dt>
+                                <dd className="mt-1 text-base text-gray-900 sm:mt-0 sm:col-span-2">12:00</dd>
                               </div>
                               <div className="px-4 py-4">
-                                <dt className="text-sm font-medium text-gray-500">Break End</dt>
-                                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                <dt className="text-base font-medium text-gray-500">Break End</dt>
+                                <dd className="mt-1 text-base text-gray-900 sm:mt-0 sm:col-span-2">
                                   {day.lunchBreakEnd}
                                 </dd>
                               </div>
