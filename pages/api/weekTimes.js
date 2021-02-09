@@ -51,6 +51,7 @@ export default async (req, res) => {
       let endTimeDayJs
       let endTime
       let hoursTracked = 0
+      let timerRunning = []
       const startTimes = []
       const endTimes = []
       let currentDate
@@ -60,6 +61,7 @@ export default async (req, res) => {
         endTimes.push(dayjs(`${timeEntry.spent_date} ${timeEntry.ended_time}`, 'YYYY-MM-DD HH:mm:ss'))
         hoursTracked = hoursTracked + timeEntry.hours
         currentDate = timeEntry.spent_date
+        timerRunning.push(timeEntry.is_running)
       })
       startTimeDayJs = dayjs.min(startTimes)
       startTime = startTimeDayJs.unix()
@@ -78,9 +80,24 @@ export default async (req, res) => {
         lunchBreakEnd: lunchBreakEnd,
         breakDuration: breakDurationFormatted,
         day: startTimeDayJs.format('dddd'),
+        isRunning: timerRunning.includes(true),
+        isFuture: false,
       })
     })
-    res.status(200).json(ret)
+    if (ret.length < 5 && ret[0] !== undefined) {
+      const lastDate = dayjs(ret[0].date, 'YYYY-MM-DD')
+      for (let i = 1; i < 5; i++) {
+        if (ret.length < 5) {
+          ret.unshift({
+            date: lastDate.add(i, 'day').format('YYYY-MM-DD'),
+            day: lastDate.add(i, 'day').format('dddd'),
+            isFuture: true,
+          })
+        }
+      }
+    }
+    // ret.reverse()
+    res.status(200).json(ret.reverse())
   } catch (err) {
     // Handle Error Here
     console.error(err)

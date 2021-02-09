@@ -97,7 +97,15 @@ export default function Home() {
     <div className="">
       <Head>
         <title>Harvest to Personio</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="manifest" href="/site.webmanifest" />
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#19181d" />
+        <meta name="apple-mobile-web-app-title" content="Elektro" />
+        <meta name="application-name" content="Elektro" />
+        <meta name="msapplication-TileColor" content="#19181d" />
+        <meta name="theme-color" content="#ffffff" />
       </Head>
       <div className="min-h-screen bg-gray-100">
         <nav className="bg-white shadow-sm">
@@ -148,12 +156,14 @@ export default function Home() {
                     </div>
                   )}
                   {!loading && weekRecords !== undefined && weekRecords.length < 1 && (
-                    <div className="flex items-center justify-center col-span-5">Welcome to the future</div>
+                    <div className="flex items-center justify-center col-span-5">
+                      <img src="/future-2.gif" alt="Welcome to the future" />
+                    </div>
                   )}
                   {!loading &&
                     weekRecords !== undefined &&
                     weekRecords.length > 0 &&
-                    weekRecords.reverse().map((day, index) => {
+                    weekRecords.map((day, index) => {
                       if (index > 4) return null
                       return (
                         <div className="bg-white rounded-xl shadow-lg overflow-hidden" key={day.date}>
@@ -163,63 +173,75 @@ export default function Home() {
                               {dayjs(day.date, 'YYYY-MM-DD').format('DD.MM.YYYY')}
                             </p>
                           </div>
-                          <div className="border-t border-gray-200 px-4 py-2 sm:p-0">
-                            <div className="sm:divide-y sm:divide-gray-200">
-                              <div className="px-4 py-4 flex justify-between items-center">
-                                <div>
-                                  <span className="text-base font-medium text-gray-500">Start Time</span>
-                                  <div className="mt-1 text-base text-gray-900 sm:mt-0 sm:col-span-2">
-                                    {day.startTime}
+                          <div className="border-t border-gray-200 px-4 py-2 sm:p-0 h-full">
+                            {day.isFuture && (
+                              <div className="flex items-center justify-center h-72 text-gray-400">
+                                That's the future
+                              </div>
+                            )}
+                            {day.isRunning && (
+                              <div className="flex items-center justify-center h-72 text-gray-400">
+                                Your timer is still running
+                              </div>
+                            )}
+                            {!day.isRunning && !day.isFuture && (
+                              <div className="sm:divide-y sm:divide-gray-200">
+                                <div className="px-4 py-4 flex justify-between items-center">
+                                  <div>
+                                    <span className="text-base font-medium text-gray-500">Start Time</span>
+                                    <div className="mt-1 text-base text-gray-900 sm:mt-0 sm:col-span-2">
+                                      {day.startTime}
+                                    </div>
                                   </div>
+                                  <button
+                                    className="active:outline-none focus:outline-none hover:bg-gray-100 p-2 rounded-md"
+                                    onClick={() => copyToClipboard(day.startTime)}
+                                  >
+                                    <Copy color="#2d323b" />
+                                  </button>
                                 </div>
-                                <button
-                                  className="active:outline-none focus:outline-none hover:bg-gray-100 p-2 rounded-md"
-                                  onClick={() => copyToClipboard(day.startTime)}
-                                >
-                                  <Copy color="#2d323b" />
-                                </button>
-                              </div>
-                              <div className="px-4 py-4 flex justify-between items-center">
-                                <div>
-                                  <span className="text-base font-medium text-gray-500">End Time</span>
-                                  <div className="mt-1 text-base text-gray-900 sm:mt-0 sm:col-span-2">
-                                    {day.endTime}
+                                <div className="px-4 py-4 flex justify-between items-center">
+                                  <div>
+                                    <span className="text-base font-medium text-gray-500">End Time</span>
+                                    <div className="mt-1 text-base text-gray-900 sm:mt-0 sm:col-span-2">
+                                      {day.endTime}
+                                    </div>
                                   </div>
+                                  <button
+                                    className="active:outline-none focus:outline-none hover:bg-gray-100 p-2 rounded-md"
+                                    onClick={() => copyToClipboard(day.endTime)}
+                                  >
+                                    <Copy color="#2d323b" />
+                                  </button>
                                 </div>
-                                <button
-                                  className="active:outline-none focus:outline-none hover:bg-gray-100 p-2 rounded-md"
-                                  onClick={() => copyToClipboard(day.endTime)}
-                                >
-                                  <Copy color="#2d323b" />
-                                </button>
-                              </div>
-                              <div className="px-4 py-4 flex justify-between items-center">
-                                <div>
-                                  <span className="text-base font-medium text-gray-500">Break Start</span>
-                                  <div className="mt-1 text-base text-gray-900 sm:mt-0 sm:col-span-2">12:00</div>
-                                </div>
-                                <button
-                                  className="active:outline-none focus:outline-none hover:bg-gray-100 p-2 rounded-md"
-                                  onClick={() => copyToClipboard('12:00')}
-                                >
-                                  <Copy color="#2d323b" />
-                                </button>
-                              </div>
-                              <div className="px-4 py-4 flex justify-between items-center">
-                                <div>
-                                  <span className="text-base font-medium text-gray-500">Break End</span>
-                                  <div className="mt-1 text-base text-gray-900 sm:mt-0 sm:col-span-2">
-                                    {day.lunchBreakEnd}
+                                <div className="px-4 py-4 flex justify-between items-center">
+                                  <div>
+                                    <span className="text-base font-medium text-gray-500">Break Start</span>
+                                    <div className="mt-1 text-base text-gray-900 sm:mt-0 sm:col-span-2">12:00</div>
                                   </div>
+                                  <button
+                                    className="active:outline-none focus:outline-none hover:bg-gray-100 p-2 rounded-md"
+                                    onClick={() => copyToClipboard('12:00')}
+                                  >
+                                    <Copy color="#2d323b" />
+                                  </button>
                                 </div>
-                                <button
-                                  className="active:outline-none focus:outline-none hover:bg-gray-100 p-2 rounded-md"
-                                  onClick={() => copyToClipboard(day.lunchBreakEnd)}
-                                >
-                                  <Copy color="#2d323b" />
-                                </button>
+                                <div className="px-4 py-4 flex justify-between items-center">
+                                  <div>
+                                    <span className="text-base font-medium text-gray-500">Break End</span>
+                                    <div className="mt-1 text-base text-gray-900 sm:mt-0 sm:col-span-2">
+                                      {day.lunchBreakEnd}
+                                    </div>
+                                  </div>
+                                  <button
+                                    className="active:outline-none focus:outline-none hover:bg-gray-100 p-2 rounded-md"
+                                    onClick={() => copyToClipboard(day.lunchBreakEnd)}
+                                  >
+                                    <Copy color="#2d323b" />
+                                  </button>
+                                </div>
                               </div>
-                            </div>
+                            )}
                           </div>
                         </div>
                       )
