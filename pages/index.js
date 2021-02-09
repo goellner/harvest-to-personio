@@ -79,7 +79,7 @@ export default function Home() {
   const copyToClipboard = (value) => {
     navigator.clipboard.writeText(value)
     toast(`🦄 Copied: ${value}`, {
-      position: 'top-center',
+      position: 'bottom-right',
       autoClose: 1000,
       hideProgressBar: false,
       closeOnClick: true,
@@ -121,10 +121,9 @@ export default function Home() {
         <meta name="theme-color" content="#ffffff" />
       </Head>
       <ToastContainer
-        position="top-center"
+        position="bottom-right"
         autoClose={1000}
         hideProgressBar={false}
-        newestOnTop
         closeOnClick
         rtl={false}
         pauseOnFocusLoss
