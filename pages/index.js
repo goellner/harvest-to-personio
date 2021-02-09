@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { Copy, Loader } from 'react-feather'
+import { ToastContainer, toast, Flip } from 'react-toastify'
 
 import dayjs from 'dayjs'
 import localeData from 'dayjs/plugin/localeData'
@@ -14,6 +15,9 @@ dayjs.extend(advancedFormat)
 dayjs.extend(isBetween)
 dayjs.extend(weekOfYear)
 dayjs.extend(isoWeek)
+
+import 'react-toastify/dist/ReactToastify.css'
+import 'animate.css/animate.css'
 
 export default function Home() {
   const [title, setTitle] = useState('')
@@ -74,6 +78,15 @@ export default function Home() {
 
   const copyToClipboard = (value) => {
     navigator.clipboard.writeText(value)
+    toast(`🦄 Copied: ${value}`, {
+      position: 'top-center',
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    })
   }
 
   useEffect(() => {
@@ -107,6 +120,18 @@ export default function Home() {
         <meta name="msapplication-TileColor" content="#19181d" />
         <meta name="theme-color" content="#ffffff" />
       </Head>
+      <ToastContainer
+        position="top-center"
+        autoClose={1000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        transition={Flip}
+      />
       <div className="min-h-screen bg-gray-100">
         <nav className="bg-white shadow-sm">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
