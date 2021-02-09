@@ -2,6 +2,8 @@
 
 Super basic next.js app, which fetches your [Harvest](https://www.getharvest.com/) time entries and shows you what you have to enter in [Personio](https://www.personio.de/).
 
+![Harvest to Personio webapp screenshot](https://github.com/goellner/harvest-to-personio/blob/main/public/screenshot.png)
+
 ## Why
 
 Because the time tracker menubar app from Harvest ist just perfect and I wanted an easy way to get the data of the week to enter in Personio.
