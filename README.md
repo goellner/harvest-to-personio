@@ -33,7 +33,7 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 
 ## Bugs
 
-This is custom tailored to my needs and I guess it has bugs. Time stuff is always weird.
+This is custom tailored to my needs and I guess it has bugs. Time stuff is always weird. Also my break always starts at exactly 12:00 and summarizes all the breaks in a day into a single break, because Personio only has one break atm.
 
 ## Learn More
 
