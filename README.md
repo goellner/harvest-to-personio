@@ -1,6 +1,19 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Harvest to Personio converter
 
+Super basic next.js app, which fetches your [Harvest](https://www.getharvest.com/) time entries and shows you what you have to enter in [Personio](https://www.personio.de/).
+
+## Why
+
+Because the time tracker menubar app from Harvest ist just perfect and I wanted an easy way to get the data of the week to enter in Personio.
 ## Getting Started
+
+Get the following from your Harvest Account:
+
+- Personal Acccess Token: https://id.getharvest.com/developers
+- Your Harvest User Id
+- Your Client ID (this project only uses one client, as it is most likely the company you work at)
+
+Copy the `.env.example` and fill in your credentials.
 
 First, run the development server:
 
@@ -14,9 +27,13 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/weekTimes](http://localhost:3000/api/weekTimes). This endpoint can be edited in `pages/api/weekTimes.js`.
 
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+
+## Bugs
+
+This is custom tailored to my needs and I guess it has bugs. Time stuff is always weird.
 
 ## Learn More
 
